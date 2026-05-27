@@ -3,8 +3,7 @@
 // Shared between apps/web and packages/tiktok-service
 // ============================================================
 
-export type TeamSide = "A" | "B";
-export type BattleStatus = "draft" | "active" | "paused" | "ended";
+import type { TeamSide, BattleStatus } from "./battle";
 
 export interface LastGift {
   user: string;

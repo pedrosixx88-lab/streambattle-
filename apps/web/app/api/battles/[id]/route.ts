@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import type { Database } from "@/types/database";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -57,9 +58,10 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     "chat_command_b",
     "tiktok_username",
   ];
-  const updates: Record<string, unknown> = {};
+  type BattleUpdate = Database["public"]["Tables"]["battles"]["Update"];
+  const updates: BattleUpdate = {};
   for (const key of allowed) {
-    if (key in body) updates[key] = body[key];
+    if (key in body) (updates as Record<string, unknown>)[key] = body[key];
   }
 
   const { data, error } = await supabase

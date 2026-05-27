@@ -48,6 +48,7 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+        Relationships: [];
       };
       battles: {
         Row: {
@@ -97,6 +98,7 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["battles"]["Insert"]>;
+        Relationships: [];
       };
       battle_participants: {
         Row: {
@@ -116,6 +118,7 @@ export interface Database {
         Update: Partial<
           Database["public"]["Tables"]["battle_participants"]["Insert"]
         >;
+        Relationships: [];
       };
       gift_events: {
         Row: {
@@ -141,6 +144,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["gift_events"]["Insert"]>;
+        Relationships: [];
       };
       user_plans: {
         Row: {
@@ -168,6 +172,7 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["user_plans"]["Insert"]>;
+        Relationships: [];
       };
       notifications: {
         Row: {
@@ -191,29 +196,39 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["notifications"]["Insert"]>;
+        Relationships: [];
       };
+    };
+    Views: {
+      [_ in never]: never;
     };
     Functions: {
       add_gift_score: {
-        Args: { p_battle_id: string; p_team: TeamSide; p_points: number };
-        Returns: { team_a_score: number; team_b_score: number };
+        Args: { p_battle_id: string; p_team: string; p_points: number };
+        Returns: Json;
       };
       register_participant: {
         Args: {
           p_battle_id: string;
           p_tiktok_user: string;
-          p_team: TeamSide;
+          p_team: string;
         };
-        Returns: void;
+        Returns: null;
       };
       end_battle: {
         Args: { p_battle_id: string };
-        Returns: void;
+        Returns: null;
       };
       get_battle_stats: {
         Args: { p_battle_id: string };
         Returns: Json;
       };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }

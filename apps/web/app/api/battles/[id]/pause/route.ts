@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { disconnectTikTokService } from "@/lib/battle/tiktok-service";
+import type { Battle } from "@/types/database";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -17,12 +18,14 @@ export async function POST(_req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
-  const { data: battle } = await supabase
+  const { data: rawBattle } = await supabase
     .from("battles")
-    .select("id, streamer_id, status")
+    .select("*")
     .eq("id", id)
     .eq("streamer_id", user.id)
     .single();
+
+  const battle = rawBattle as Battle | null;
 
   if (!battle) {
     return NextResponse.json({ error: "Batalha não encontrada" }, { status: 404 });

@@ -64,7 +64,7 @@ export const GIFT_DIAMOND_VALUES: Record<number, number> = {
   7191: 88,   // Sending Love
   5660: 99,   // Drama Queen
   7394: 100,  // Hat
-  6683: 100,  // Guitar
+  7395: 100,  // Guitar
   7192: 199,  // Sun Cream
   7263: 200,  // Motorcyle
   6535: 299,  // Paper Crane

@@ -1,4 +1,5 @@
 import { PLAN_LIMITS, type PlanType } from "@streambattle/shared-types";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type PlanLimitError =
   | "battles_limit_reached"
@@ -84,7 +85,8 @@ export function checkGiftMultiplier(
  */
 export async function getBattlesThisMonth(
   userId: string,
-  supabase: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: SupabaseClient<any>
 ): Promise<number> {
   const startOfMonth = new Date();
   startOfMonth.setDate(1);

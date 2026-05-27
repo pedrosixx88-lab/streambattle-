@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { connectTikTokService } from "@/lib/battle/tiktok-service";
+import type { Battle } from "@/types/database";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -17,12 +18,14 @@ export async function POST(_req: NextRequest, { params }: Params) {
   }
 
   // Fetch the battle
-  const { data: battle, error: fetchError } = await supabase
+  const { data: rawBattle, error: fetchError } = await supabase
     .from("battles")
     .select("*")
     .eq("id", id)
     .eq("streamer_id", user.id)
     .single();
+
+  const battle = rawBattle as Battle | null;
 
   if (fetchError || !battle) {
     return NextResponse.json({ error: "Batalha não encontrada" }, { status: 404 });

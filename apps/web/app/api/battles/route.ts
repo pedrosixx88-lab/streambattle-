@@ -6,7 +6,7 @@ import {
   checkGiftMultiplier,
   getBattlesThisMonth,
 } from "@/lib/battle/plan-limits";
-import type { BattleInsert } from "@/types/database";
+import type { BattleInsert, BattleStatus } from "@/types/database";
 
 // GET /api/battles — list own battles
 export async function GET(req: NextRequest) {
@@ -32,8 +32,9 @@ export async function GET(req: NextRequest) {
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
-  if (status) {
-    query = query.eq("status", status);
+  const validStatuses: BattleStatus[] = ["draft", "active", "paused", "ended"];
+  if (status && validStatuses.includes(status as BattleStatus)) {
+    query = query.eq("status", status as BattleStatus);
   }
 
   const { data, error, count } = await query;
