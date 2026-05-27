@@ -13,6 +13,7 @@ const config: Config = {
         // StreamBattle Design System
         background: "#0D0D0F",
         surface: "#1A1A1F",
+        "surface-hover": "#22222A",
         border: "#2A2A32",
         "brand-red": "#FF0050",
         "brand-blue": "#00B4FF",
