@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { Bell } from "lucide-react";
-import Link from "next/link";
+import { NotificationBell } from "./NotificationBell";
 
 export async function TopBar({ title }: { title?: string }) {
   const supabase = await createClient();
@@ -16,15 +15,6 @@ export async function TopBar({ title }: { title?: string }) {
         .single()
     : { data: null };
 
-  // Unread notification count
-  const { count: unreadCount } = user
-    ? await supabase
-        .from("notifications")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .eq("read", false)
-    : { count: 0 };
-
   return (
     <header className="h-14 flex items-center justify-between px-6 border-b border-border bg-surface/60 backdrop-blur-sm">
       <h1 className="text-base font-semibold text-text-primary">
@@ -32,16 +22,8 @@ export async function TopBar({ title }: { title?: string }) {
       </h1>
 
       <div className="flex items-center gap-3">
-        {/* Notification bell */}
-        <Link
-          href="/dashboard"
-          className="relative p-2 rounded-md text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
-        >
-          <Bell className="w-4 h-4" />
-          {(unreadCount ?? 0) > 0 && (
-            <span className="absolute top-1 right-1 w-2 h-2 bg-brand-red rounded-full" />
-          )}
-        </Link>
+        {/* Notification bell (client component — fetches its own data) */}
+        <NotificationBell />
 
         {/* Plan badge */}
         {profile?.plan && profile.plan !== "free" && (

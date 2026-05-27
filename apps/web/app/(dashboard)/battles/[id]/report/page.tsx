@@ -5,6 +5,7 @@ import type { Battle } from "@/types/database";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { formatScore } from "@/lib/battle/scoring";
+import { BattleScoreChart } from "@/components/battle/BattleScoreChart";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -37,6 +38,14 @@ export default async function BattleReportPage({ params }: Params) {
   const { data: statsRaw } = await supabase.rpc("get_battle_stats", {
     p_battle_id: id,
   });
+
+  // Fetch gift events for score progression chart
+  const { data: giftEvents } = await supabase
+    .from("gift_events")
+    .select("created_at, team, diamond_value, repeat_count")
+    .eq("battle_id", id)
+    .order("created_at", { ascending: true })
+    .limit(500);
 
   const stats = statsRaw as {
     total_gifts: number;
@@ -150,6 +159,23 @@ export default async function BattleReportPage({ params }: Params) {
             </div>
           ))}
         </div>
+
+        {/* Score progression chart */}
+        {(giftEvents?.length ?? 0) > 0 && (
+          <div className="bg-surface border border-border rounded-lg p-4">
+            <h2 className="text-xs font-bold text-text-muted uppercase tracking-wide mb-4">
+              Progressão de pontos
+            </h2>
+            <BattleScoreChart
+              giftEvents={giftEvents ?? []}
+              teamAName={battle.team_a_name ?? "Time A"}
+              teamBName={battle.team_b_name ?? "Time B"}
+              teamAColor={battle.team_a_color ?? "#FF0050"}
+              teamBColor={battle.team_b_color ?? "#00B4FF"}
+              startedAt={battle.started_at}
+            />
+          </div>
+        )}
 
         {/* Team breakdown + top gifters */}
         <div className="grid grid-cols-2 gap-4">
