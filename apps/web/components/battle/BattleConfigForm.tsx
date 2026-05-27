@@ -20,7 +20,8 @@ export function BattleConfigForm({ defaultTiktokUsername = "" }: BattleConfigFor
     team_b_name: "Time B",
     team_a_color: "#FF0050",
     team_b_color: "#00B4FF",
-    punishment: "",
+    punishment_a: "",
+    punishment_b: "",
     duration_seconds: 300,
     gift_multiplier: 1,
     chat_command_a: "!timea",
@@ -59,10 +60,17 @@ export function BattleConfigForm({ defaultTiktokUsername = "" }: BattleConfigFor
     }
 
     try {
+      // Serialize per-team punishments into the single `punishment` field as JSON
+      const { punishment_a, punishment_b, ...rest } = form;
+      const punishment =
+        punishment_a || punishment_b
+          ? JSON.stringify({ a: punishment_a, b: punishment_b })
+          : "";
+
       const res = await fetch("/api/battles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...rest, punishment }),
       });
 
       const data = await res.json();
@@ -215,20 +223,41 @@ export function BattleConfigForm({ defaultTiktokUsername = "" }: BattleConfigFor
         </p>
       </div>
 
-      {/* Punishment (optional) */}
-      <div>
-        <label className="block text-sm font-medium text-text-primary mb-1.5">
-          Punição do perdedor{" "}
+      {/* Punishments per team (optional) */}
+      <div className="space-y-3">
+        <p className="text-sm font-medium text-text-primary">
+          Punições se perder{" "}
           <span className="text-text-muted font-normal">(opcional)</span>
-        </label>
-        <input
-          type="text"
-          value={form.punishment}
-          onChange={(e) => set("punishment", e.target.value)}
-          placeholder="Ex: Dançar no próximo vídeo"
-          maxLength={120}
-          className="w-full px-3 py-2 bg-background border border-border rounded-md text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red transition-colors"
-        />
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-text-muted mb-1.5 font-medium" style={{ color: form.team_a_color }}>
+              Se {form.team_a_name || "Time A"} perder:
+            </label>
+            <input
+              type="text"
+              value={form.punishment_a}
+              onChange={(e) => set("punishment_a", e.target.value)}
+              placeholder="Ex: Dançar no próximo vídeo"
+              maxLength={120}
+              className="w-full px-3 py-2 bg-background border border-border rounded-md text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red transition-colors text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-text-muted mb-1.5 font-medium" style={{ color: form.team_b_color }}>
+              Se {form.team_b_name || "Time B"} perder:
+            </label>
+            <input
+              type="text"
+              value={form.punishment_b}
+              onChange={(e) => set("punishment_b", e.target.value)}
+              placeholder="Ex: Cantar uma música ao vivo"
+              maxLength={120}
+              className="w-full px-3 py-2 bg-background border border-border rounded-md text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand-blue/50 focus:border-brand-blue transition-colors text-sm"
+            />
+          </div>
+        </div>
+        <p className="text-xs text-text-muted -mt-1">Aparece no relatório final junto com o vencedor.</p>
       </div>
 
       {/* Submit */}

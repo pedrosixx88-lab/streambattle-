@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Play, Pause, Square, Copy, CheckCheck, ExternalLink } from "lucide-react";
+import { Play, Pause, Square, Copy, CheckCheck, ExternalLink, FlaskConical } from "lucide-react";
 import { BattleBar } from "./BattleBar";
 import { BattleTimer } from "./BattleTimer";
 import { GiftFeed } from "./GiftFeed";
@@ -50,6 +50,26 @@ export function BattleControlPanel({ battle, appUrl }: BattleControlPanelProps) 
           // Redirect to report after end
           setTimeout(() => router.push(`/battles/${battle.id}/report`), 1500);
         }
+      }
+    } catch {
+      setActionError("Erro de conexão.");
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  async function sendTestGift(team: "A" | "B", points: number) {
+    setActionLoading("test-" + team);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/battles/${battle.id}/test-gift`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ team, points, giftName: "Rosa 🌹", tiktokUser: "testviewer" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setActionError(data.error ?? "Erro ao simular presente.");
       }
     } catch {
       setActionError("Erro de conexão.");
@@ -201,6 +221,34 @@ export function BattleControlPanel({ battle, appUrl }: BattleControlPanelProps) 
               )}
             </div>
           </div>
+
+          {/* Test gift buttons — only when active */}
+          {isActive && (
+            <div>
+              <p className="text-xs font-medium text-text-muted uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                <FlaskConical className="w-3 h-3" />
+                Simular presente (teste)
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => sendTestGift("A", 50)}
+                  disabled={!!actionLoading}
+                  className="flex-1 py-1.5 text-xs font-bold rounded-md transition-colors disabled:opacity-60"
+                  style={{ background: battle.team_a_color + "20", color: battle.team_a_color, border: `1px solid ${battle.team_a_color}40` }}
+                >
+                  +50 pts → {battle.team_a_name}
+                </button>
+                <button
+                  onClick={() => sendTestGift("B", 50)}
+                  disabled={!!actionLoading}
+                  className="flex-1 py-1.5 text-xs font-bold rounded-md transition-colors disabled:opacity-60"
+                  style={{ background: battle.team_b_color + "20", color: battle.team_b_color, border: `1px solid ${battle.team_b_color}40` }}
+                >
+                  +50 pts → {battle.team_b_name}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Overlay URL */}
           <div>
