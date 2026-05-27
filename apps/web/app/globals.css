@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-text-primary antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0D0D0F;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2A2A32;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3A3A45;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Battle bar animation */
+  .battle-bar-fill {
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Glow effects */
+  .glow-red {
+    box-shadow: 0 0 20px rgba(255, 0, 80, 0.4);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(0, 180, 255, 0.4);
+  }
+
+  /* Text gradient */
+  .text-gradient-battle {
+    background: linear-gradient(90deg, #FF0050, #00B4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass effect */
+  .glass {
+    background: rgba(26, 26, 31, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(42, 42, 50, 0.6);
+  }
+}
