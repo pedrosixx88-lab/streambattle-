@@ -42,19 +42,12 @@ export default async function DashboardPage() {
 
   const recentBattles = (rawRecentBattles ?? []) as Battle[];
 
-  // Unread notifications
-  const { count: unreadNotifs } = await supabase
-    .from("notifications")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .eq("read", false);
-
   return (
     <>
       <TopBar title="Dashboard" />
       <main className="flex-1 p-6 space-y-6">
         {/* Stats row */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <StatCard
             label="Batalhas totais"
             value={profile?.battles_count ?? 0}
@@ -76,12 +69,6 @@ export default async function DashboardPage() {
                 ? "blue"
                 : "default"
             }
-          />
-          <StatCard
-            label="Notificações"
-            value={unreadNotifs ?? 0}
-            color={(unreadNotifs ?? 0) > 0 ? "red" : "default"}
-            description="Não lidas"
           />
         </div>
 

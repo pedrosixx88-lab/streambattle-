@@ -259,15 +259,50 @@ export default async function BattleReportPage({ params }: Params) {
           ))}
         </div>
 
-        {/* Punishment */}
-        {battle.punishment && (
-          <div className="bg-surface border border-border rounded-lg p-4">
-            <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
-              Punição do perdedor
-            </p>
-            <p className="text-sm text-text-primary">{battle.punishment}</p>
-          </div>
-        )}
+        {/* Punishments */}
+        {battle.punishment && (() => {
+          let punishA = "";
+          let punishB = "";
+          try {
+            const parsed = JSON.parse(battle.punishment);
+            punishA = parsed.a ?? "";
+            punishB = parsed.b ?? "";
+          } catch {
+            // Legacy single punishment
+            punishA = battle.punishment;
+          }
+          const loserTeam = battle.winner_team === "A" ? "B" : battle.winner_team === "B" ? "A" : null;
+          const punishLoser = loserTeam === "A" ? punishA : loserTeam === "B" ? punishB : null;
+
+          return (
+            <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
+              <p className="text-xs text-text-muted uppercase tracking-wide">Punições</p>
+              <div className="grid grid-cols-2 gap-4">
+                {punishA && (
+                  <div className={`rounded-lg p-3 ${battle.winner_team === "B" ? "border-2 border-brand-red/50 bg-brand-red/5" : "border border-border"}`}>
+                    <p className="text-xs font-bold mb-1" style={{ color: battle.team_a_color }}>
+                      {battle.winner_team === "B" ? "🔥 " : ""}{battle.team_a_name} perde:
+                    </p>
+                    <p className="text-sm text-text-primary">{punishA}</p>
+                  </div>
+                )}
+                {punishB && (
+                  <div className={`rounded-lg p-3 ${battle.winner_team === "A" ? "border-2 border-brand-blue/50 bg-brand-blue/5" : "border border-border"}`}>
+                    <p className="text-xs font-bold mb-1" style={{ color: battle.team_b_color }}>
+                      {battle.winner_team === "A" ? "🔥 " : ""}{battle.team_b_name} perde:
+                    </p>
+                    <p className="text-sm text-text-primary">{punishB}</p>
+                  </div>
+                )}
+              </div>
+              {punishLoser && (
+                <p className="text-xs text-text-muted">
+                  ⚡ Punição ativa: <span className="text-brand-red font-semibold">{punishLoser}</span>
+                </p>
+              )}
+            </div>
+          );
+        })()}
       </main>
     </>
   );
