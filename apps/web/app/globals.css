@@ -73,4 +73,30 @@
     backdrop-filter: blur(12px);
     border: 1px solid rgba(42, 42, 50, 0.6);
   }
+
+  /* Gift pop-in animation */
+  @keyframes giftPopIn {
+    0% {
+      opacity: 0;
+      transform: translateY(8px) scale(0.9);
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(0) scale(1.05);
+    }
+    30% {
+      transform: scale(1);
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.95);
+    }
+  }
+
+  .animate-gift-pop-in {
+    animation: giftPopIn 3s ease-in-out forwards;
+  }
 }
