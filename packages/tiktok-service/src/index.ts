@@ -1,3 +1,4 @@
+import "dotenv/config"; // carrega .env antes de qualquer import
 import express from "express";
 import type { Request, Response } from "express";
 import type { BattleConfig } from "@streambattle/shared-types";
